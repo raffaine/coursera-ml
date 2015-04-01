@@ -62,6 +62,18 @@ Theta2_grad = zeros(size(Theta2));
 %               and Theta2_grad from Part 2.
 %
 
+zf = @(T,I)(sigmoid(T * [ones(1,size(I,2)); I]));
+
+h = sigmoid(zf(Theta2, zf(Theta1, X')))';
+
+[~, p] = max(h, [], 2);
+
+for i=1:m
+
+J += 
+
+end
+
 
 
 
