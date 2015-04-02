@@ -81,9 +81,20 @@ J += (-yk*log(hk) - (1-yk)*log(1-hk));
 
 end
 
-J = J/m;
+reg = 0;
+for j = 1:size(Theta1,1)
 
-% Is it possible to vectorize the cost calculation
+reg += sum(Theta1(j,2:end) .^ 2);
+reg += sum(Theta2(:,j+1) .^ 2);
+
+end
+
+
+J = J/m + (lambda/(2*m))*reg;
+
+
+
+% Is it possible to vectorize the cost calculation?
 
 %yk = Kvec == y;
 
