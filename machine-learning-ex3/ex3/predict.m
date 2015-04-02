@@ -23,7 +23,7 @@ p = zeros(size(X, 1), 1);
 
 zf = @(T,I)(sigmoid(T * [ones(1,size(I,2)); I]));
 
-h = sigmoid(zf(Theta2, zf(Theta1, X')))';
+h = zf(Theta2, zf(Theta1, X'))';
 
 [~, p] = max(h, [], 2);
 
