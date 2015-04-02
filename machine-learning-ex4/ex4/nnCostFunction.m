@@ -62,18 +62,33 @@ Theta2_grad = zeros(size(Theta2));
 %               and Theta2_grad from Part 2.
 %
 
+% simple vector used to generate output vec y
+Kvec = 1:num_labels;
+
+% functor that calculates Z for a layer given Theta T and input I
 zf = @(T,I)(sigmoid(T * [ones(1,size(I,2)); I]));
 
-h = sigmoid(zf(Theta2, zf(Theta1, X')))';
+% using functor zf, calculates the hypothesis h
+h = zf(Theta2, zf(Theta1, X'));
 
-[~, p] = max(h, [], 2);
-
+% loop to calculate cost
 for i=1:m
 
-J += 
+hk = h(:,i);
+yk = Kvec == y(i);
+
+J += (-yk*log(hk) - (1-yk)*log(1-hk)); 
 
 end
 
+J = J/m;
+
+% Is it possible to vectorize the cost calculation
+
+%yk = Kvec == y;
+
+% This is wrong as it computes cross example hypothesis.
+%J = -(sum(log(h)*yk) - sum(log(1-h)*(1-yk)))/m
 
 
 
