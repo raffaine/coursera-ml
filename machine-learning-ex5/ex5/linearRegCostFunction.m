@@ -19,14 +19,13 @@ grad = zeros(size(theta));
 %               You should set J to the cost and grad to the gradient.
 %
 
+h = sigmoid(theta'*X'); 
 
+J = (log(h)*-y - log(1-h)*(1-y))/m;  
+J += (theta(2:end).^2)*lambda/(2*m);
 
-
-
-
-
-
-
+grad = ((h - y') * X)'/m;  
+grad(2:end) += (lambda/m)*theta(2:end);
 
 
 
