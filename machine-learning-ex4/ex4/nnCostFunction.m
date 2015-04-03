@@ -80,6 +80,10 @@ h = A3;
 
 Yk = bsxfun(@eq, Kvec, y); %Kvec == y;
 
+% Is it possible to vectorize the cost calculation?
+% This is wrong as it computes cross example hypothesis.
+%J = -(sum(log(h)*Yk) - sum(log(1-h)*(1-Yk)))/m
+
 % loop to calculate cost
 for i=1:m
 
@@ -110,28 +114,9 @@ del2 = (Theta2' * del3) .* [ones(1,m); sigmoidGradient(Z2)];
 Theta1_grad = (del2(2:end,:) * [ones(1,m); A1]')/m;
 Theta2_grad = (del3 * [ones(1,m); A2]')/m;
 
-% Is it possible to vectorize the cost calculation?
-
-
-% This is wrong as it computes cross example hypothesis.
-%J = -(sum(log(h)*yk) - sum(log(1-h)*(1-yk)))/m
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+%Regularize the back propagation
+Theta1_grad(:,2:end) += (lambda/m)*(Theta1(:,2:end));
+Theta2_grad(:,2:end) += (lambda/m)*(Theta2(:,2:end));
 
 % -------------------------------------------------------------
 
