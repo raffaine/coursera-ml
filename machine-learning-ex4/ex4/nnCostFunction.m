@@ -65,22 +65,32 @@ Theta2_grad = zeros(size(Theta2));
 % simple vector used to generate output vec y
 Kvec = 1:num_labels;
 
-% functor that calculates Z for a layer given Theta T and input I
-zf = @(T,I)(sigmoid(T * [ones(1,size(I,2)); I]));
+% functor that calculates A for a layer given Theta T and input I
+af = @(T,I)(T * [ones(1,size(I,2)); I]);
 
 % using functor zf, calculates the hypothesis h
-h = zf(Theta2, zf(Theta1, X'));
+A1 = X';
+
+Z2 = af(Theta1, A1);
+A2 = sigmoid(Z2);
+
+Z3 = af(Theta2, A2);
+A3 = sigmoid(Z3);
+h = A3;
+
+Yk = bsxfun(@eq, Kvec, y); %Kvec == y;
 
 % loop to calculate cost
 for i=1:m
 
 hk = h(:,i);
-yk = Kvec == y(i);
+yk = Yk(i,:);
 
 J += (-yk*log(hk) - (1-yk)*log(1-hk)); 
 
 end
 
+% Calculate the regularization factor
 reg = 0;
 for j = 1:size(Theta1,1)
 
@@ -89,14 +99,19 @@ reg += sum(Theta2(:,j+1) .^ 2);
 
 end
 
-
+%Add it to the Cost
 J = J/m + (lambda/(2*m))*reg;
 
 
+% Back propagation in a vectorized fashion! o.O
+del3 = A3 - Yk';
+del2 = (Theta2' * del3) .* [ones(1,m); sigmoidGradient(Z2)];
+
+Theta1_grad = (del2(2:end,:) * [ones(1,m); A1]')/m;
+Theta2_grad = (del3 * [ones(1,m); A2]')/m;
 
 % Is it possible to vectorize the cost calculation?
 
-%yk = Kvec == y;
 
 % This is wrong as it computes cross example hypothesis.
 %J = -(sum(log(h)*yk) - sum(log(1-h)*(1-yk)))/m
